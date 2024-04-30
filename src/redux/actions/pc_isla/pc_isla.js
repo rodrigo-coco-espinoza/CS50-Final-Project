@@ -24,9 +24,6 @@ import {
     GET_BLOQUES_OCUPADOS_FAIL,
     ADD_PROTOCOLO_SUCCESS,
     ADD_PROTOCOLO_FAIL,
-    GET_JORNADAS_MINHACIENDA_SUCCESS,
-    UPDATE_JORNADAS_MINHACIENDA_FAIL,
-    UPDATE_JORNADAS_MINHACIENDA_SUCCESS,
     GET_CALENDARIO_PC_ISLA_SUCCESS,
     GET_ASISTENCIA_SUCCESS,
     REGISTRAR_INGRESO_SUCCESS,
@@ -363,49 +360,6 @@ export const get_bloques_ocupados = () => async dispatch => {
     }
 };
 
-export const get_jornadas_minhacienda = () => async dispatch => {
-    const config = {
-        headers: {
-            'Accept': 'application/json',
-        //    'Authorization': `JWT ${localStorage.getItem('access')}`,
-        }
-    };
-
-    const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/pc_isla/jornadas_minhacienda/`, config);
-    dispatch({
-        type: GET_JORNADAS_MINHACIENDA_SUCCESS,
-        payload: res.data
-    });
-};
-
-export const update_jornadas_minhacienda = (formData) => async dispatch => {
-    const config = {
-        headers: {
-            'Accept': 'application/json',
-            'Authorization': `JWT ${localStorage.getItem('access')}`,
-            'Content-Type': 'multipart/form-data',
-        }
-    };
-
-    try {
-        const res = await axios.patch(`${process.env.REACT_APP_API_URL}/api/pc_isla/jornadas_minhacienda/`, formData, config);
-        if (res.status === 200) {
-            dispatch({
-                type: UPDATE_JORNADAS_MINHACIENDA_SUCCESS,
-                payload: res.data
-            });
-        } else {
-            dispatch({
-                type: UPDATE_JORNADAS_MINHACIENDA_FAIL
-            });
-        }
-
-    } catch(err) {
-        dispatch({
-            type: UPDATE_JORNADAS_MINHACIENDA_FAIL
-        });
-    }
-};
 
 export const get_calendario_pc_isla = () => async dispatch => {
     const config = {

@@ -2,6 +2,7 @@ from rest_framework import serializers
 from .models import *
 from django.utils import timezone
 import datetime
+from operator import itemgetter
 
 DIAS = {
     'lunes': 0,
@@ -164,8 +165,10 @@ class ProyectoActivoSerializer(serializers.ModelSerializer):
 
             })
 
+        # Sort data by 'fecha' (date) in ascending order
+        sorted_data = sorted(data, key=itemgetter('fecha'))
 
-        return data
+        return sorted_data
 
     class Meta:
         model = Proyecto

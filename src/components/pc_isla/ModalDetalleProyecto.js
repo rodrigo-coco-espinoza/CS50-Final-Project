@@ -7,10 +7,8 @@ import { Alert } from "@material-tailwind/react";
 import { update_encargados_sii, rechazar_proyecto, aceptar_proyecto, get_bloques_ocupados } from "redux/actions/pc_isla/pc_isla";
 import ModalRechazarProyecto from "./ModalRechazarProyecto";
 import ProtocloInstituciones from "./ProtocoloInstituciones";
-import ProtocoloMINHACIENDA from "./ProtocoloMINHACIENDA";
 import ComboboxSelected from "./ComboboxSelected";
 import BloquesSelected from "./BloquesSelected";
-import ModalEditarJornada from "./ModalEditarJornada";
 import TablaAsistencia from "./TablaAsistencia";
 
 
@@ -26,7 +24,6 @@ function ModalDetalleProyecto({
     rechazar_proyecto,
     aceptar_proyecto,
     bloquesOcupados,
-    jornadasHacienda,
 }) {
 
     const handleCloseModal = () => {
@@ -201,16 +198,6 @@ function ModalDetalleProyecto({
         setShowAlertProtocolo(true);
     };
 
-    // Editar jornada MINHACIENDA
-    const [showModalHacienda, setShowModalHacienda] = useState(false);
-    const [showAlertHacienda, setShowAlertHacineda] = useState(false);
-    const closeModalHacienda = () => {
-        setShowModalHacienda(false);
-    };
-    const haciendaUpdated = () => {
-        setShowAlertHacineda(true);
-    }
-
 
     return (
         <>
@@ -261,21 +248,8 @@ function ModalDetalleProyecto({
                                             <h1 className="text-xl text-gris-800 cursor-default">Solicitud de proyecto</h1>
                                             <div className="mt-1">
                                                 <label className="text-lg text-gris-700 text-sm" id="institucion">Institución:</label>
-                                                <p className="text-gris-900 cursor-default">{institucion.nombre} { (user && (user.is_pc_isla_admin || user.is_pc_isla_editor)) && <a 
-                                                    className="anchor-editar-institucion"
-                                                >
-                                                    <ArrowPathIcon
-                                                        //onClick={() => setEditarinstitucionSii(true)} 
-                                                        className="h-6 w-6 text-gris-800 hover:text-azul-cobalto-400 inline cursor-pointer"
-                                                    />
-                                                </a>}
+                                                <p className="text-gris-900 cursor-default">{institucion.nombre}
                                                 </p>                       
-                                                <Tooltip 
-                                                    key="tooltipEditarinstitucion" 
-                                                    anchorSelect=".anchor-editar-institucion" 
-                                                    place="top">
-                                                    Actualizar datos institución
-                                                </Tooltip>
                                             </div>
                                             <div className="mt-1">
                                                 <label className="text-lg text-gris-700 text-sm" id="oficio-solicitud">Descripción:</label>
@@ -444,31 +418,17 @@ function ModalDetalleProyecto({
                                         
                                         
                                         {/* Protocolo de uso */}
-                                        {!isAccepted && 
-                                            <div className="mb-2 px-6 pb-4 pt-4 bg-gris-300">
-                                                <h1 className="text-xl text-gris-800 cursor-default">Protocolo de uso</h1>
-                                                <p className="text-gris-900 cursor-default">Respuesta pendiente</p>
-                                            </div>
-                                        }
                                         {isAccepted && !isProtocolo && 
                                             <>
                                             {(user && (user.is_pc_isla_admin || user.is_pc_isla_editor)) ?
                                                 <>
-                                                { institucion.sigla === "MINHACIENDA" ? 
-                                                    <ProtocoloMINHACIENDA 
-                                                        institucion={institucion}
-                                                        idProyecto={proyecto.id}
-                                                        bloquesOcupados={{options: bloquesOcupados['Juan Fernández']}}
-                                                        protocoloSaved={protocoloSaved}
-                                                    />
-                                                :
                                                     <ProtocloInstituciones
                                                         institucion={institucion}
                                                         idProyecto={proyecto.id}
                                                         bloquesOcupados={bloquesOcupados}
                                                         protocoloSaved={protocoloSaved}
                                                     />
-                                                } 
+                                                
                                                 </>
                                             :
                                                 <div className="mb-2 px-6 pb-4 pt-4 bg-gris-300">
@@ -481,19 +441,6 @@ function ModalDetalleProyecto({
                                         {isAccepted && isProtocolo && 
                                             <>
                                             <div className="mb-2 px-6 pb-4 pt-4 bg-gris-300">
-                                                {/* Alert jornadas HACIENDA  */}
-                                                <Alert
-                                                    open={showAlertHacienda}
-                                                    onClose={() => setShowAlertHacineda(false)}
-                                                    onClick={(e) => e.stopPropagation()}
-                                                    animate={{
-                                                        mount: { y: 0 },
-                                                        unmount: { y: 100 }
-                                                    }}
-                                                    className="relative max-w-[28rem] sm-sii:max-w-[40rem] transform -top-3 z-50 bg-verde-esmeralda-300 mx-auto"
-                                                >
-                                                    Jornadas del Ministerio de Hacienda actualizadas.
-                                                </Alert>
                                                 {/* Alert protocolo registrado */}
                                                 <Alert
                                                     open={showAlertProtocolo}
@@ -613,20 +560,6 @@ function ModalDetalleProyecto({
                                                                 <BloquesSelected 
                                                                     bloques={proyecto.jornada}
                                                                 />
-                                                                { ( institucion.sigla === "MINHACIENDA" && user && (user.is_pc_isla_admin || user.is_pc_isla_editor)) && <a 
-                                                                className="anchor-editar-jornada ml-2 mt-3 sm-sii:mt-0"
-                                                                >
-                                                                <PencilSquareIcon
-                                                                    onClick={() => setShowModalHacienda(true)} 
-                                                                    className="h-6 w-6 text-gris-800 hover:text-azul-cobalto-400 inline cursor-pointer"
-                                                                />
-                                                                </a>}
-                                                                <Tooltip 
-                                                                    key="tooltipEditarJornada" 
-                                                                    anchorSelect=".anchor-editar-jornada" 
-                                                                    place="top">
-                                                                    Editar jornadas
-                                                                </Tooltip>
                                                             </div>
                                                         </div>
 
@@ -639,11 +572,14 @@ function ModalDetalleProyecto({
                                         }
                                         
                                         {/* Registro de asistencia */}
+                                        {isProtocolo &&
                                         <div className="mb-4 px-6 pb-4 pt-2">
                                             <h1 className="text-xl text-gris-800 cursor-default">Registro de asistencia</h1>
                                             <TablaAsistencia
                                                 asistencias={proyecto.asistencia} />
                                         </div>
+
+                                        }
                                     </div>
                                 </div>
 
@@ -666,14 +602,6 @@ function ModalDetalleProyecto({
                 closeModal={closeModalRechazar}
                 rechazarProyecto={rechazarProyecto}
             />
-
-            {jornadasHacienda && (user && (user.is_pc_isla_admin || user.is_pc_isla_editor)) && institucion.sigla === "MINHACIENDA" && (
-                <ModalEditarJornada 
-                    active={showModalHacienda}
-                    closeModal={closeModalHacienda}
-                    jornadaUpdated={haciendaUpdated}
-                />            
-            )}
         </>
     );
 }
@@ -682,7 +610,6 @@ const mapStateToProps = state => ({
     user: state.auth.user,
     encargadosSiiOptions: state.institucion_reducer.encargadosPcIslaOptions,
     bloquesOcupados: state.institucion_reducer.bloquesOcupados,
-    jornadasHacienda: state.institucion_reducer.jornadasHacienda,
 })
 
 export default connect (mapStateToProps, {

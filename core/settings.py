@@ -34,7 +34,6 @@ DJANGO_APPS = [
 ]
 
 PROJECT_APPS = [
-    'apps.buscador',
     'apps.pc_isla',
     'apps.user',
 ]

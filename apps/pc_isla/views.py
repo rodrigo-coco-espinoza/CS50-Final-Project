@@ -38,20 +38,6 @@ DIGITO_A_DIA = {
     '3' :'jueves',
     '4' :'viernes',
 }
-
-JORNADAS_HACIENDA = [
-    'lunes[AM]',
-    'lunes[PM]',
-    'martes[AM]',
-    'martes[PM]',
-    'miércoles[AM]',
-    'miércoles[PM]',
-    'jueves[AM]',
-    'jueves[PM]',
-    'viernes[AM]',
-    'viernes[PM]',
-]
-
 def obtener_bloques_ocupados():
     proyectos_instance = Proyecto.objects.filter(fecha_termino__gte=timezone.now()).exclude(Q(estado='finalizado') | Q(estado='rechazado'))
 
@@ -87,44 +73,6 @@ def obtener_bloques_ocupados():
                     bloques_ocupados[equipo]['pm'][dia_index] = True
     
     return bloques_ocupados
-
-def obtener_jornada_minhacienda():
-    # Estructura datos de respuesta
-    data = {
-        'proyectos': [],
-        'horario': [
-            {'dia': 'lunes', 'AM': None, 'PM': None},
-            {'dia': 'martes', 'AM': None, 'PM': None},
-            {'dia': 'miércoles', 'AM': None, 'PM': None},
-            {'dia': 'jueves', 'AM': None, 'PM': None},
-            {'dia': 'viernes', 'AM': None, 'PM': None},
-        ]
-    }
-
-    # Proyectos de MINHACIENDA
-    institucion = Institucion.objects.get(sigla="MINHACIENDA")
-    proyectos = Proyecto.objects.filter(
-        institucion=institucion,
-        ).exclude(
-            Q(protocolo='') | Q(estado='finalizado') | Q(estado='rechazado')
-        )
-
-    # Agregar proyectos activos
-    for proyecto in proyectos:
-        data['proyectos'].append({
-            'id': proyecto.id,
-            'nombre': proyecto.nombre
-        })
-    
-    # Obtener las jornadas los proyectos
-    jornadas = Jornada.objects.filter(proyecto__in=proyectos, extra=0, active=1)
-    for jornada in jornadas:
-        for item in data['horario']:
-            if item['dia'] == jornada.dia:
-                item[jornada.horario] = jornada.proyecto.id
-                break
-
-    return data
 
 def get_calendario():
     calendario = []
@@ -229,7 +177,7 @@ def get_calendario():
                     dia_calendario['pasado'] = True
 
             #Identificar asistencia del día
-            if fecha_calendario == fecha_actual:
+            if fecha_calendario <= fecha_actual:
                 asistencia = Asistencia.objects.filter(jornada=jornada, fecha=fecha_actual).first()
                 if asistencia and asistencia.datetime_ingreso:
                     dia_calendario[jornada.equipo][jornada.horario]['asistencia'] = True
@@ -610,11 +558,6 @@ class AddProtocolo(APIView):
             #Resultado
             proyecto_result = ProyectoActivoSerializer(proyecto).data
             bloques_ocupados = obtener_bloques_ocupados()
-            if proyecto.institucion.sigla == "MINHACIENDA":
-                jornada_minhacienda = obtener_jornada_minhacienda()
-            else:
-                jornada_minhacienda = None
-
             
             # Actualizar calendario
             calendario = get_calendario()
@@ -622,7 +565,6 @@ class AddProtocolo(APIView):
             return Response({'proyecto_actualizado': proyecto_result,
                              'bloquesOcupados': bloques_ocupados,
                              'id_institucion': proyecto.institucion.id,
-                             'jornada_minhacienda': jornada_minhacienda,
                              'calendario': calendario}, status=status.HTTP_200_OK)
         except Exception as e:
             print(e)
@@ -640,114 +582,7 @@ class DownloadProtocolo(APIView):
             return response
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_404_NOT_FOUND)
-
-
-class JornadaMinhacienda(APIView):
-    def get_permissions(self):
-        if self.request.method == 'GET':
-            return [permissions.AllowAny()]  # Apply different permissions for GET
-        else:
-            return [PcIslaPermissions()]  # Apply different permissions for other methods
-
-
-    def get(self, request):
-
-        data = obtener_jornada_minhacienda()
-        return Response({'jornadas_minhacienda': data}, status=status.HTTP_200_OK)
-
-        
-
-    def patch(self, request):
-        try:
-            data = request.data
-
-            # Obtener las jornadas actuales
-            institucion = Institucion.objects.get(sigla="MINHACIENDA")
-            proyectos_activos = Proyecto.objects.filter(institucion=institucion).exclude(Q(estado='finalizado') | Q(estado='rechazado'))
-            jornadas_actuales = Jornada.objects.filter(proyecto__in=proyectos_activos, extra=0, active=1)
-
-            # Desactivar las jornadas actuales
-            jornadas_actuales.update(active=0)
-
-            # Ingresar nueva jornadas
-            data = self.request.data
-            for jornada in JORNADAS_HACIENDA:
-                try:
-                    # Agregar nueva jornada
-                    proyecto = Proyecto.objects.get(id=data[jornada])
-                    
-                    dia_horario = jornada.split("[")
-                    dia = dia_horario[0]
-                    horario = dia_horario[1].rstrip("]")
-
-                    nueva_jornada = Jornada.objects.create(
-                        proyecto=proyecto,
-                        equipo='Juan Fernández',
-                        dia=dia,
-                        horario=horario,
-                    )
-                    nueva_jornada.save()
-
-                except Exception as e:
-                    print(f'Error: {e}')   
-
-            # Eliminar asistencias futuras
-            dia_actual = datetime.now().date()
-            asistencias_actuales = Asistencia.objects.filter(
-                jornada__proyecto__in=proyectos_activos,
-                fecha__gte=dia_actual,
-                datetime_ingreso__isnull=True
-            )
-            asistencias_actuales.delete()
-
-
-
-            # Agregar nuevas asistencias
-            feriados = Chile()
-            jornadas = Jornada.objects.filter(proyecto__in=proyectos_activos, extra=0, active=1)
-            for jornada in jornadas:
-                current_date = datetime.now().date() 
-                end_date = jornada.proyecto.fecha_termino 
-                while current_date <= end_date:
-                    if current_date.weekday() == DIAS_A_DIGITO[jornada.dia] and current_date not in feriados:
-                        nueva_asistencia = Asistencia.objects.create(
-                            jornada=jornada,
-                            fecha=current_date
-                        )
-                        nueva_asistencia.save()
-
-                    current_date += timedelta(days=1)
-      
-
-            # Actualizar proyectos activos Hacienda
-            proyectos_minhacienda = {}
-            proyectos = Proyecto.objects.filter(institucion=institucion)
-            if proyectos:
-                proyectos_minhacienda = {
-                    'id_institucion': institucion.id,
-                    'nombre_institucion': institucion.nombre,
-                    'nombre_sigla': institucion.sigla,
-                    'proyectos': []
-                }
-                
-                for proyecto in proyectos:
-                    if proyecto.estado in ['solicitud recibida', 'confección del protocolo', 'en curso']:
-                        proyectos_minhacienda['proyectos'].append(ProyectoActivoSerializer(proyecto).data)
-                    else:
-                        proyectos_minhacienda['proyectos'].append(ProyectoNoActivoSerializer(proyecto).data)
-
-            # Actualizar bloques ocupados
-            calendario = get_calendario()
-            # Actualizar jornadas Hacienda
-            jornadas_minhacienda = obtener_jornada_minhacienda()
-
-            return Response({'proyectos_minhacienda': proyectos_minhacienda,
-                             'calendario': calendario,
-                             'jornadas_minhacienda': jornadas_minhacienda}, status=status.HTTP_200_OK)
-        except Exception as e:
-            print(e)
-            return Response({'error': str(e)}, status=status.HTTP_501_NOT_IMPLEMENTED)
-        
+     
 
 class HorarioPcIsla(APIView):
     permission_classes = (permissions.AllowAny, )

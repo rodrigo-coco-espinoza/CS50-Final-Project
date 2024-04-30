@@ -15,20 +15,11 @@ function Navbar(){
             <div className="px-4 sm:px-6">
                 <div className="-ml-4 -mt-2 hidden lg:flex flex-wrap items-center justify-between sm:flex-nowrap md:px-4 px-2">
                     <Link to="/" className="mt-2">
-                        <img src={logo} width={140} alt="Logo SII"/>
+                        <img src={logo} width={140} alt="Logo"/>
                     </Link>
                     <div className="ml-4 mt-2 flex-shrink-0 flex items-end">
-                        <NavLink to="/convenios" className="text-gris-300 text-lg inline-flex font-medium leading-6 border-b-2 border-azul-marino-400 hover:border-b-2 hover:border-naranja-400 transition duration-300 ease-in-out mx-4">
-                            Convenios
-                        </NavLink>
-                        <NavLink to="/busqueda" className="text-gris-300 text-lg inline-flex font-medium leading-6 border-b-2 border-azul-marino-400 hover:border-b-2 hover:border-naranja-400 transition duration-300 ease-in-out mx-4">
-                            Buscar queries
-                        </NavLink>
                         <NavLink to="/pc_isla" className="text-gris-300 text-lg inline-flex font-medium leading-6 border-b-2 border-azul-marino-400 hover:border-b-2 hover:border-naranja-400 transition duration-300 ease-in-out mx-4">
                             PC Isla
-                        </NavLink>
-                        <NavLink to="/validador" className="text-gris-300 text-lg inline-flex font-medium leading-6 border-b-2 border-azul-marino-400 hover:border-b-2 hover:border-naranja-400 transition duration-300 ease-in-out mx-4">
-                            Validar archivos
                         </NavLink>
                         <NavLink
                           to="/usuarios"
@@ -91,17 +82,8 @@ function Navbar(){
                                 <Popover.Panel className="absolute -left-16 z-10 mt-3 w-[202px] -translate-x-1/2 transform">
                                     <div className="overflow-hidden rounded-md shadow-lg ring-1 ring-black ring-opacity-5">
                                     <div className="relative grid py-3 gap-2  bg-white lg:grid-cols-2">
-                                    <NavLink to="/busqueda" className="text-gris-800 text-lg inline-flex font-medium leading-6 border-b-2 border-white hover:border-b-2 hover:border-naranja-400 transition duration-300 ease-in-out mx-4">
-                                        Convenios
-                                    </NavLink>
-                                    <NavLink to="/busqueda" className="text-gris-800 text-lg inline-flex font-medium leading-6 border-b-2 border-white hover:border-b-2 hover:border-naranja-400 transition duration-300 ease-in-out mx-4">
-                                        Buscar queries
-                                    </NavLink>
                                     <NavLink to="/pc_isla" className="text-gris-800 text-lg inline-flex font-medium leading-6 border-b-2 border-white hover:border-b-2 hover:border-naranja-400 transition duration-300 ease-in-out mx-4">
                                         PC Isla
-                                    </NavLink>
-                                    <NavLink to="/validador" className="text-gris-800 text-lg inline-flex font-medium leading-6 border-b-2 border-white hover:border-b-2 hover:border-naranja-400 transition duration-300 ease-in-out mx-4">
-                                        Validar archivos
                                     </NavLink>
                                     </div>
 

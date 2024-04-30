@@ -23,9 +23,7 @@ import {
     GET_BLOQUES_OCUPADOS_SUCCESS,
     ADD_PROTOCOLO_FAIL,
     ADD_PROTOCOLO_SUCCESS,
-    GET_JORNADAS_MINHACIENDA_SUCCESS,
     GET_CALENDARIO_PC_ISLA_SUCCESS,
-    UPDATE_JORNADAS_MINHACIENDA_SUCCESS,
     GET_ASISTENCIA_SUCCESS,
     REGISTRAR_INGRESO_SUCCESS,
     REGISTRAR_SALIDA_SUCCESS,
@@ -38,7 +36,6 @@ const initialState = {
     proyectosPcIsla: [],
     personasInstitucion: [],
     bloquesOcupados: {},
-    jornadasHacienda: [],
     calendario: [],
     asistencias: [],
 };
@@ -194,41 +191,16 @@ export function institucion_reducer (state=initialState, action){
                 }           
             }
 
-            // Actualizar jornadas de Hacienda si corresponde
-            let jornada_update = state.jornadasHacienda;
-            if (payload.jornada_minhacienda) {
-                jornada_update = payload.jornada_minhacienda;
-            }
-
             return {
                 ...state,
                 proyectosPcIsla: proyectosPcIslaProtocolo,
                 bloquesOcupados: payload.bloquesOcupados,
-                jornadasHacienda: jornada_update,
                 calendario: payload.calendario
-            };
-        case GET_JORNADAS_MINHACIENDA_SUCCESS:
-            return {
-                ...state,
-                jornadasHacienda: payload.jornadas_minhacienda
             };
         case GET_CALENDARIO_PC_ISLA_SUCCESS:
             return {
                 ...state,
                 calendario: payload.calendario
-            };
-        case UPDATE_JORNADAS_MINHACIENDA_SUCCESS:
-
-            const updatedProyectosHacienda = [...state.proyectosPcIsla];
-            // Encontrar institucion en el estado
-            const haciendaIndex = updatedProyectosHacienda.findIndex((inst) => inst.id_institucion === payload.proyectos_minhacienda.id_institucion);
-            updatedProyectosHacienda[haciendaIndex] = payload.proyectos_minhacienda
-
-            return {
-                ...state,
-                proyectosPcIsla: updatedProyectosHacienda,
-                calendario: payload.calendario,
-                jornadasHacienda: payload.jornadas_minhacienda
             };
         case GET_ASISTENCIA_SUCCESS:
             return {
