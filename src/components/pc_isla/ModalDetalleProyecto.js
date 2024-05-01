@@ -216,7 +216,7 @@ function ModalDetalleProyecto({
                             }}
                             className="relative max-w-[28rem] sm-sii:max-w-[40rem] transform -top-3 z-50 bg-verde-esmeralda-300 mx-auto"
                         >
-                            Encargados SII actualizados.
+                            Encargados actualizados.
                         </Alert>
                         {/* Alert respuesta SII  */}
                         <Alert
@@ -274,7 +274,7 @@ function ModalDetalleProyecto({
                                             </div>
                                             {/* Mostar encargados */}
                                             <div className={`mt-1 ${editarEncargadosSii ? 'hidden' : ''}`}>
-                                                <label className="text-lg text-gris-700 text-sm" id="oficio-solicitud">Encargados SII:</label>
+                                                <label className="text-lg text-gris-700 text-sm" id="oficio-solicitud">Encargados:</label>
                                                 <p className="text-gris-900 cursor-default">{proyecto.encargado_sii.nombre} (encargado) - {proyecto.backup_sii.nombre} (backup) { (user && (user.is_pc_isla_admin || user.is_pc_isla_editor)) && <a 
                                                     className="anchor-editar-encargados"
                                                 >
@@ -341,7 +341,7 @@ function ModalDetalleProyecto({
                                             <>                                        
                                             { (user && (user.is_pc_isla_admin || user.is_pc_isla_editor)) ? 
                                                 <div className="mb-2 px-6 pb-4 pt-2">
-                                                    <h1 className="text-xl text-gris-800 cursor-default">Respuesta SII</h1>
+                                                    <h1 className="text-xl text-gris-800 cursor-default">Respuesta</h1>
                                                     <form onSubmit={e => {onSubmitAceptarProyecto(e)}} method="POST" action="#">
                                                     <div className="mt-1">
                                                         <label className="text-lg text-gris-700 text-sm" id="oficio-respuesta">Adjuntar oficio de respuesta:</label>
@@ -387,7 +387,7 @@ function ModalDetalleProyecto({
                                                 </div>
                                                 :
                                                 <div className="mb-2 px-6 pb-4 pt-2 mt-1">
-                                                    <h1 className="text-xl text-gris-800 cursor-default">Respuesta SII</h1>
+                                                    <h1 className="text-xl text-gris-800 cursor-default">Respuesta</h1>
                                                     <p className="text-gris-900 cursor-default">Respuesta pendiente</p>
                                                 </div>
                                             }
@@ -395,7 +395,7 @@ function ModalDetalleProyecto({
                                         }
                                         {isAccepted && 
                                             <div className="mb-2 px-6 pb-4 pt-2">
-                                            <h1 className="text-xl text-gris-800 cursor-default">Respuesta SII</h1>
+                                            <h1 className="text-xl text-gris-800 cursor-default">Respuesta</h1>
                                             <div className="mt-1">
                                                 <label className="text-lg text-gris-700 text-sm" id="oficio-respuesta">Oficio de respuesta de aprobación del proyecto:</label>
                                                 <p className="text-gris-900 cursor-default">Enviado el {proyecto.formatted_fecha_oficio_respuesta}<a
@@ -479,75 +479,14 @@ function ModalDetalleProyecto({
                                                     </div>
                                                     <div className="mt-1">
                                                         <label className="text-lg text-gris-700 text-sm" id="encargado-ie">Encargado del proyecto:</label>
-                                                        <p className="text text-gris-900 cursor-default">{proyecto.encargado.nombre}
-                                                        
-                                                        { (user && (user.is_pc_isla_admin || user.is_pc_isla_editor)) && <a 
-                                                            className="anchor-actualizar-encargado"
-                                                        >
-                                                            <ArrowPathIcon
-                                                                //onClick={() => setEditarinstitucionSii(true)} 
-                                                                className="h-6 w-6 text-gris-800 hover:text-azul-cobalto-400 inline cursor-pointer ml-1"
-                                                            />
-                                                        </a>}
-                                                        
-                                                        { (user && (user.is_pc_isla_admin || user.is_pc_isla_editor)) && <a 
-                                                        className="anchor-editar-encargadoIE"
-                                                        >
-                                                        <PencilSquareIcon
-                                                            //onClick={handleEditarEncargadoIE} 
-                                                            className="h-6 w-6 text-gris-800 hover:text-azul-cobalto-400 inline cursor-pointer"
-                                                        />
-                                                        </a>} 
-                                                        
-                                                        </p>
-                                                        <Tooltip 
-                                                            key="tooltipEditarEncargadoIE" 
-                                                            anchorSelect=".anchor-editar-encargadoIE" 
-                                                            place="top">
-                                                            Editar encargado
-                                                        </Tooltip>
-                                                        <Tooltip 
-                                                            key="tooltipEditarEncargado" 
-                                                            anchorSelect=".anchor-actualizar-encargado" 
-                                                            place="top">
-                                                            Actualizar datos de la persona
-                                                        </Tooltip>
+                                                        <p className="text text-gris-900 cursor-default">{proyecto.encargado.nombre}</p>
+
                                                     </div>
                                                     <div className="mt-1">
                                                         <label className="text-lg text-gris-700 text-sm" id="investigadores">Investiador/es del proyecto:</label>
                                                         {proyecto.investigadores.map((investigador, index) => (
                                                             <>
-                                                            <p key={`investigador_${index}`} className="text text-gris-900 cursor-default">{investigador.nombre} { (user && (user.is_pc_isla_admin || user.is_pc_isla_editor)) && <a
-                                                            key={`link_actualizar_investigador_${index}`}
-                                                            className="anchor-actualizar-investigador"
-                                                        >
-                                                            <ArrowPathIcon
-                                                                //onClick={() => setEditarinstitucionSii(true)} 
-                                                                className="h-6 w-6 text-gris-800 hover:text-azul-cobalto-400 inline cursor-pointer"
-                                                            />
-                                                            </a>} 
-                                                            { (index === 0 && user && (user.is_pc_isla_admin || user.is_pc_isla_editor)) && <a 
-                                                            className="anchor-editar-investigadores"
-                                                            >
-                                                            <PencilSquareIcon
-                                                                //onClick={handleEditarEncargadoIE} 
-                                                                className="h-6 w-6 text-gris-800 hover:text-azul-cobalto-400 inline cursor-pointer"
-                                                            />
-                                                            </a>}
-                                                                
-                                                            </p>
-                                                            <Tooltip 
-                                                                key={`tooltipEditarInvestigador_${index}`} 
-                                                                anchorSelect=".anchor-actualizar-investigador" 
-                                                                place="top">
-                                                                Actualizar datos de la persona
-                                                            </Tooltip>
-                                                            <Tooltip 
-                                                            key="tooltipEditarInvestigadores" 
-                                                            anchorSelect=".anchor-editar-investigadores" 
-                                                            place="top">
-                                                            Editar investigador/es
-                                                        </Tooltip>
+                                                            <p key={`investigador_${index}`} className="text text-gris-900 cursor-default">{investigador.nombre}</p>
                                                             </>
                                                         ))}
 

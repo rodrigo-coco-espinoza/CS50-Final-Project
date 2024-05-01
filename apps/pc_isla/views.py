@@ -176,9 +176,9 @@ def get_calendario():
                 if fecha_calendario < fecha_actual:
                     dia_calendario['pasado'] = True
 
-            #Identificar asistencia del día
+            #Identificar asistencias marcadas
             if fecha_calendario <= fecha_actual:
-                asistencia = Asistencia.objects.filter(jornada=jornada, fecha=fecha_actual).first()
+                asistencia = Asistencia.objects.filter(jornada=jornada, fecha=fecha_calendario).first()
                 if asistencia and asistencia.datetime_ingreso:
                     dia_calendario[jornada.equipo][jornada.horario]['asistencia'] = True
                 

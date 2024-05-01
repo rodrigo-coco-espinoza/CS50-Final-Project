@@ -69,8 +69,8 @@ const Calendar = ({
 
   return (
     <>
-    <h1 className="font-bold text-gris-700 text-4xl mt-10 mb-8 border-b-2 border-gris-500">Calendario de uso de los computadores</h1>
-    <div className="flex">
+    <h1 className="font-bold text-gris-700 text-4xl mt-10 mb-8 border-b-2 border-gris-500 cursor-default">Calendario de uso de los computadores</h1>
+    <div className="flex cursor-default">
       {/* Columna PCs */}
       <div className='flex flex-col w-[150px] mr-1'>
         <div className='h-[50px] bg-transparent mb-2'></div>

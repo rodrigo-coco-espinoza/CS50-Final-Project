@@ -204,9 +204,16 @@ DJOSER = {
 
 AUTH_USER_MODEL = 'user.UserAccount'
 SECURE_CROSS_ORIGIN_OPENER_POLICY = None
-CORS_ORIGIN_WHITELIST = env.list('CORS_ORIGIN_WHITELIST_DEV')
-CSRF_TRUSTED_ORIGIN = env.list('CSRF_TRUSTED_ORIGIN_DEV')
-
+# CORS settings
+CORS_ORIGIN_WHITELIST = [
+    'http://127.0.0.1:3000',
+    'http://localhost:3000',
+]
+# CSRF settings
+CSRF_TRUSTED_ORIGIN = [
+    'http://127.0.0.1:3000',
+    'http://localhost:3000',
+]
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
