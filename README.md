@@ -57,6 +57,9 @@ Contains components for each page, allowing different parts to be worked on sepa
 There are two .env files in the application, .env and core/.env, which contain information such as URLs, Django's secret key, and other parameters that are best kept hidden in a production environment. For this case, they have been included within the repository.
 
 ## Instructions
+To run this app, you will need to create a new virtual environment and install all modules listed in requirements.txt for Python dependencies and all packages listed in package.json for Node.js dependencies.
+
+
 The database was preloaded with example projects and user accounts. In this example, consider:
 
 1. The tax administration is represented by HOGWARTS, with the following user accounts:
